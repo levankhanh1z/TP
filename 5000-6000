@@ -1,0 +1,25 @@
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Đường dẫn đến Depth
+local depthPath = game:GetService("Players").LocalPlayer.PlayerGui.TopBar.TextLabel.Depth
+
+-- Hàm kiểm tra điều kiện và gửi sự kiện GenerateTP
+local function checkAndFireEvent()
+    if depthPath and depthPath:IsA("TextLabel") and string.find(depthPath.Text, "Depth: Surface") then
+        -- Nếu có, gửi sự kiện GenerateTP tới server
+        local args = {5075}
+        local generateTPEvent = ReplicatedStorage:WaitForChild("GenerateTP")
+        if generateTPEvent then
+            generateTPEvent:FireServer(unpack(args))
+        else
+            warn("RemoteEvent 'GenerateTP' not found.")
+        end
+    end
+end
+
+-- Vòng lặp để kiểm tra điều kiện và chờ 10 giây
+while true do
+    checkAndFireEvent()
+    wait(10)
+end
